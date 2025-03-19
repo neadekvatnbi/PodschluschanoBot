@@ -1,0 +1,30 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main  # Запускаем при пуше в ветку main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Используем Ubuntu для деплоя
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Клонируем код из репозитория
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # Указываем версию Python, которую используем
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Устанавливаем зависимости
+
+      - name: Deploy to Railway
+        run: |
+          curl -sSL https://railway.app/deploy/button.sh | bash  # Скрипт деплоя в Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}  # Ваш токен для Railway, хранится в GitHub Secrets
